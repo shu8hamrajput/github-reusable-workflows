@@ -65,11 +65,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-        
-      - name: list permissions of the service account
-        run: |
-          gcloud projects get-iam-policy $(gcloud config get-value project) --flatten="bindings[].members" --format='table(bindings.role)' --filter="bindings.members:$(gcloud auth list --filter=status:ACTIVE --format="value(account)")"
+          credentials_json: ${{ secrets.GCP_SA_KEY }}          
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -93,4 +89,4 @@ jobs:
           GCR_REPOSITORY: ${{ inputs.gcr-repository }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker push $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION
+          docker --debug push $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION
