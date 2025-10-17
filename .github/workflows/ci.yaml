@@ -11,6 +11,11 @@ on:
         required: true
         type: string
         description: "Repository name in GCR"
+      
+      dockerfile-path:
+        required: false
+        type: string
+        description: "Path to the Dockerfile (default is ./Dockerfile)"
     secrets:
       GCP_SA_KEY:
         required: true
@@ -74,7 +79,7 @@ jobs:
           GCR_REPOSITORY: ${{ inputs.gcr-repository }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker build -t $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION .
+          docker build -t $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION -f ${{ inputs.dockerfile-path || './Dockerfile' }} .
 
       - name: Push image to GCR
         if: github.event_name != 'pull_request'
