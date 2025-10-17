@@ -80,7 +80,7 @@ jobs:
           GCR_REPOSITORY: ${{ inputs.gcr-repository }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker build -t $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION ${{ inputs.context }}
+          docker build -t ${{GCR_REGISTRY}}/${{GCR_REPOSITORY}}:$VERSION ${{ inputs.context }}
 
       - name: Push image to GCR
         if: github.event_name != 'pull_request'
@@ -89,4 +89,4 @@ jobs:
           GCR_REPOSITORY: ${{ inputs.gcr-repository }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker --debug push $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION
+          docker push ${{GCR_REGISTRY}}/${{GCR_REPOSITORY}}:${{VERSION}}
