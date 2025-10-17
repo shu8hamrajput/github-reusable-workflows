@@ -10,7 +10,7 @@ on:
         required: true
         type: string
     secrets:
-      gcp-sa-key:
+      GCP_SA_KEY:
         required: true
 
   push:
