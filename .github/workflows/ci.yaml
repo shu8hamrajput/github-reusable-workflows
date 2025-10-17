@@ -12,6 +12,7 @@ on:
     secrets:
       gcp-sa-key:
         required: true
+
   push:
     # Publish `master` as Docker `latest` image.
     branches:
