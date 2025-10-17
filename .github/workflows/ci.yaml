@@ -6,57 +6,81 @@ on:
       gcr-registry:
         required: true
         type: string
+        description: "GCR registry URL (e.g., gcr.io/project-id)"
       gcr-repository:
         required: true
         type: string
+        description: "Repository name in GCR"
     secrets:
       GCP_SA_KEY:
         required: true
+        description: "GCP Service Account JSON key"
 
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
       - master
       - release
       - feature/**
-
-    # Publish `v1.2.3` tags as releases.
     tags:
       - v*
 
-  # Run tests for any PRs.
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     name: Build and Push to GCR
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Run tests
         run: |
-          docker-compose build test
-          docker-compose run test
-      - name: Find version
+          docker build -t test:latest -f Dockerfile.test .
+          docker run --rm test:latest
+
+      - name: Determine version
+        id: version
         run: |
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           [ "$VERSION" == "master" ] && VERSION=latest
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "VERSION=$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Determined version: $VERSION"
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.gcp-sa-key }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
       - name: Configure Docker for GCR
         run: |
-          gcloud auth configure-docker
-      - name: Build, tag, and push image to GCR
+          gcloud auth configure-docker ${{ inputs.gcr-registry }}
+
+      - name: Build image
+        env:
+          GCR_REGISTRY: ${{ inputs.gcr-registry }}
+          GCR_REPOSITORY: ${{ inputs.gcr-repository }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION .
+
+      - name: Push image to GCR
         if: github.event_name != 'pull_request'
         env:
           GCR_REGISTRY: ${{ inputs.gcr-registry }}
           GCR_REPOSITORY: ${{ inputs.gcr-repository }}
-          VERSION: ${{ env.VERSION }}
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker build -t $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION .
           docker push $GCR_REGISTRY/$GCR_REPOSITORY:$VERSION
