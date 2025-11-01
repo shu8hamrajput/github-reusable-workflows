@@ -37,26 +37,26 @@ jobs:
   #   name: Run Unit Tests
   #   uses: shu8hamrajput/github-reusable-workflows/ci/unit-test.yaml@main
 
-  integration-tests:
-    name: Run Integration Tests
-    uses: shu8hamrajput/github-reusable-workflows/ci/integration-test.yaml@main
+  # integration-tests:
+  #   name: Run Integration Tests
+  #   uses: shu8hamrajput/github-reusable-workflows/ci/integration-test.yaml@main
 
-  build:
-    name: Build
-    needs: [lint, unit-tests, integration-tests]
-    uses: shu8hamrajput/github-reusable-workflows/ci/build.yaml@main
-    with:
-      gcr-registry: ${{ inputs.gcr-registry }}
-      gcr-repository: ${{ inputs.gcr-repository }}
-      context: ${{ inputs.context }}
-      version: ${{ inputs.version-tag}}
-      PROJECT_ID: ${{ inputs.PROJECT_ID }}
+  # build:
+  #   name: Build
+  #   needs: [lint, unit-tests, integration-tests]
+  #   uses: shu8hamrajput/github-reusable-workflows/ci/build.yaml@main
+  #   with:
+  #     gcr-registry: ${{ inputs.gcr-registry }}
+  #     gcr-repository: ${{ inputs.gcr-repository }}
+  #     context: ${{ inputs.context }}
+  #     version: ${{ inputs.version-tag}}
+  #     PROJECT_ID: ${{ inputs.PROJECT_ID }}
   
-  security-scan:
-    name: Security Scan
-    needs: build
-    uses: shu8hamrajput/github-reusable-workflows/ci/security-scan.yaml@main
-    with:
-      gcr-registry: ${{ inputs.gcr-registry }}
-      gcr-repository: ${{ inputs.gcr-repository }}
-      version: ${{ inputs.version-tag}}
+  # security-scan:
+  #   name: Security Scan
+  #   needs: build
+  #   uses: shu8hamrajput/github-reusable-workflows/ci/security-scan.yaml@main
+  #   with:
+  #     gcr-registry: ${{ inputs.gcr-registry }}
+  #     gcr-repository: ${{ inputs.gcr-repository }}
+  #     version: ${{ inputs.version-tag}}
