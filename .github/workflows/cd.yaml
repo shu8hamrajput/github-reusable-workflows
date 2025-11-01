@@ -17,6 +17,39 @@ on:
         required: true
 
 jobs:
-  terraform:
-    name: Terraform Deployment
-    uses: ./cd/staging-deploy.yaml
+  plan:
+    name: Terraform Plan
+    uses: ./.github/workflows/cd-steps/terraform-plan.yaml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+      environment: ${{ inputs.environment }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+  apply:
+    name: Terraform Apply
+    needs: plan
+    uses: ./.github/workflows/cd-steps/terraform-apply.yaml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+      environment: ${{ inputs.environment }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+  deploy:
+    name: Deploy to GKE
+    needs: apply
+    uses: ./.github/workflows/cd-steps/deploy.yaml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+      container_version: ${{ inputs.container_version }}
+      environment: ${{ inputs.environment }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+  test:
+    name: Run Acceptance Tests
+    needs: deploy
+    uses: ./.github/workflows/cd-steps/acceptance-tests.yaml
+    with:
+      environment: ${{ inputs.environment }}

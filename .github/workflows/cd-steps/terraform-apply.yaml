@@ -1,0 +1,30 @@
+name: Terraform Apply
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      GCP_SA_KEY:
+        required: true
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Mock Terraform Apply
+        shell: bash
+        run: |
+          echo "🚀 Applying Terraform changes for ${{ inputs.environment }}"
+          echo "✅ Creating new resources..."
+          sleep 2
+          echo "✅ Updating existing resources..."
+          sleep 2
+          echo "✅ Infrastructure changes applied successfully!"

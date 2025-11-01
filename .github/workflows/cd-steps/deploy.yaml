@@ -1,0 +1,103 @@
+name: Deploy to GKE
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      container_version:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      GCP_SA_KEY:
+        required: true
+
+jobs:
+  dev-deploy:
+    if: inputs.environment == 'dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Mock GKE Authentication
+        shell: bash
+        run: |
+          echo "🔐 Authenticating with Dev GKE cluster..."
+          echo "✅ Dev cluster credentials obtained"
+
+      - name: Mock Dev Deployment
+        shell: bash
+        run: |
+          echo "🚀 Starting deployment to DEV"
+          echo "📦 Container version: ${{ inputs.container_version }}"
+          sleep 2
+          echo "✅ Dev deployment configuration updated"
+          echo "✅ Rolling update started"
+          sleep 2
+          echo "✅ New pods are running"
+          echo "✅ Dev deployment completed"
+
+  staging-deploy:
+    if: inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Mock GKE Staging Authentication
+        shell: bash
+        run: |
+          echo "🔐 Authenticating with Staging GKE cluster..."
+          echo "✅ Staging cluster credentials obtained"
+
+      - name: Mock Staging Deployment
+        shell: bash
+        run: |
+          echo "🚀 Starting deployment to STAGING"
+          echo "📦 Container version: ${{ inputs.container_version }}"
+          sleep 2
+          echo "✅ Staging deployment configuration updated"
+          echo "✅ Running canary deployment (25% traffic)"
+          sleep 2
+          echo "✅ Canary health check passed"
+          echo "✅ Rolling update to remaining pods"
+          sleep 2
+          echo "✅ All staging pods updated"
+          echo "✅ Staging deployment verified"
+
+  prod-deploy:
+    if: inputs.environment == 'prod'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Mock GKE Production Authentication
+        shell: bash
+        run: |
+          echo "🔐 Authenticating with Production GKE cluster..."
+          echo "✅ Production cluster credentials obtained"
+
+      - name: Mock Production Deployment
+        shell: bash
+        run: |
+          echo "⚠️ Starting PRODUCTION deployment..."
+          echo "📦 Container version: ${{ inputs.container_version }}"
+          sleep 2
+          echo "✅ Production deployment manifest validated"
+          echo "🔄 Starting blue-green deployment"
+          sleep 2
+          echo "✅ New (green) environment created"
+          echo "✅ Health checks passing on green environment"
+          sleep 2
+          echo "🔀 Switching traffic to green environment"
+          echo "✅ Traffic successfully shifted"
+          sleep 2
+          echo "🧹 Cleaning up old (blue) environment"
+          echo "✅ Production deployment completed successfully"

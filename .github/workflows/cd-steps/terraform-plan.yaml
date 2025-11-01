@@ -1,0 +1,36 @@
+name: Terraform Plan
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      GCP_SA_KEY:
+        required: true
+        
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Mock Terraform Init
+        shell: bash
+        run: |
+          echo "🔄 Initializing Terraform in directory: ${{ inputs.working-directory }}"
+          echo "✅ Terraform backend configured for ${{ inputs.environment }}"
+          echo "✅ Provider plugins downloaded"
+
+      - name: Mock Terraform Plan
+        shell: bash
+        run: |
+          echo "📋 Running Terraform plan for ${{ inputs.environment }}"
+          echo "✅ Found the following changes:"
+          echo "  + New resources to be created: 2"
+          echo "  ~ Resources to be updated: 1"
+          echo "  - Resources to be deleted: 0"
