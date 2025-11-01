@@ -31,20 +31,20 @@ permissions:
 jobs:
   lint:
     name: Lint Code
-    uses: shu8hamrajput/github-reusable-workflows/ci/lint.yaml
+    uses: shu8hamrajput/github-reusable-workflows/ci/lint.yaml@main
 
   unit-tests:
     name: Run Unit Tests
-    uses: shu8hamrajput/github-reusable-workflows/ci/unit-test.yaml
+    uses: shu8hamrajput/github-reusable-workflows/ci/unit-test.yaml@main
 
   integration-tests:
     name: Run Integration Tests
-    uses: shu8hamrajput/github-reusable-workflows/ci/integration-test.yaml
+    uses: shu8hamrajput/github-reusable-workflows/ci/integration-test.yaml@main
 
   build:
     name: Build
     needs: [lint, unit-tests, integration-tests]
-    uses: shu8hamrajput/github-reusable-workflows/ci/build.yaml
+    uses: shu8hamrajput/github-reusable-workflows/ci/build.yaml@main
     with:
       gcr-registry: ${{ inputs.gcr-registry }}
       gcr-repository: ${{ inputs.gcr-repository }}
@@ -55,7 +55,7 @@ jobs:
   security-scan:
     name: Security Scan
     needs: build
-    uses: shu8hamrajput/github-reusable-workflows/ci/security-scan.yaml
+    uses: shu8hamrajput/github-reusable-workflows/ci/security-scan.yaml@main
     with:
       gcr-registry: ${{ inputs.gcr-registry }}
       gcr-repository: ${{ inputs.gcr-repository }}
