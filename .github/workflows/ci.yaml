@@ -31,7 +31,7 @@ permissions:
 jobs:
   lint:
     name: Lint Code
-    uses: shu8hamrajput/github-reusable-workflows/ci/lint.yaml@main
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/lint.yaml@main
 
   # unit-tests:
   #   name: Run Unit Tests
