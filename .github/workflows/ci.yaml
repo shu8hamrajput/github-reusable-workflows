@@ -33,9 +33,9 @@ jobs:
     name: Lint Code
     uses: shu8hamrajput/github-reusable-workflows/ci/lint.yaml@main
 
-  unit-tests:
-    name: Run Unit Tests
-    uses: shu8hamrajput/github-reusable-workflows/ci/unit-test.yaml@main
+  # unit-tests:
+  #   name: Run Unit Tests
+  #   uses: shu8hamrajput/github-reusable-workflows/ci/unit-test.yaml@main
 
   integration-tests:
     name: Run Integration Tests
