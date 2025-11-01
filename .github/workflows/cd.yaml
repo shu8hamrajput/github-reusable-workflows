@@ -19,7 +19,7 @@ on:
 jobs:
   plan:
     name: Terraform Plan
-    uses: ./.github/workflows/cd-steps/terraform-plan.yaml
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/cd-steps/terraform-plan.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
       environment: ${{ inputs.environment }}
@@ -29,7 +29,7 @@ jobs:
   apply:
     name: Terraform Apply
     needs: plan
-    uses: ./.github/workflows/cd-steps/terraform-apply.yaml
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/cd-steps/terraform-apply.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
       environment: ${{ inputs.environment }}
@@ -39,7 +39,7 @@ jobs:
   deploy:
     name: Deploy to GKE
     needs: apply
-    uses: ./.github/workflows/cd-steps/deploy.yaml
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/cd-steps/deploy.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
       container_version: ${{ inputs.container_version }}
@@ -50,6 +50,6 @@ jobs:
   test:
     name: Run Acceptance Tests
     needs: deploy
-    uses: ./.github/workflows/cd-steps/acceptance-tests.yaml
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/cd-steps/acceptance-tests.yaml@main
     with:
       environment: ${{ inputs.environment }}

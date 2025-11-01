@@ -14,4 +14,4 @@ jobs:
       - name: Rollback Deployment
         run: |
           # Replace with actual rollback commands
-          kubectl rollout undo deployment/my-app
+          echo "Rolling back deployment..."

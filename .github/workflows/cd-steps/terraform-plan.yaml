@@ -34,3 +34,4 @@ jobs:
           echo "  + New resources to be created: 2"
           echo "  ~ Resources to be updated: 1"
           echo "  - Resources to be deleted: 0"
+          exit 0

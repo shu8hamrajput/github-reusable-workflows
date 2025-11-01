@@ -28,3 +28,4 @@ jobs:
           echo "✅ Updating existing resources..."
           sleep 2
           echo "✅ Infrastructure changes applied successfully!"
+          exit 0

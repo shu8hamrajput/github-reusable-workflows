@@ -14,4 +14,4 @@ jobs:
       - name: Deploy to Staging
         run: |
           # Replace with actual staging deployment commands
-          kubectl apply -f k8s/staging.yaml
+          echo "kubectl apply -f k8s/staging.yaml"
