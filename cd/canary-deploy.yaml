@@ -1,0 +1,17 @@
+name: Canary Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  canary-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Canary Deployment
+        run: |
+          # Replace with actual canary deployment commands
+          kubectl apply -f k8s/canary.yaml

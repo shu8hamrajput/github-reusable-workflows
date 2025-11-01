@@ -1,0 +1,55 @@
+name: Security Scan
+
+on:
+  workflow_call:
+    inputs:
+      gcr-registry:
+        required: true
+        type: string
+        description: "GCR registry URL (e.g., gcr.io/project-id)"
+      gcr-repository:
+        required: true
+        type: string
+        description: "Repository name in GCR"
+      context:
+        required: false
+        type: string
+        description: "Build context directory"
+        default: "."
+      version:
+        required: true
+        type: string
+        description: "Version to tag the Docker image"
+      PROJECT_ID:
+        required: true
+        type: string
+        description: "GCP Project ID"
+    secrets:
+      GCP_SA_KEY:
+        required: true
+        description: "GCP Service Account JSON key"
+
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy Security Scan
+        uses: aquasecurity/trivy-action@v0.11.0
+        with:
+          image-ref: ${{ inputs.gcr-registry }}/${{ inputs.gcr-repository }}:${{ inputs.version }}
+
+      - name: Run Gosec Security Scan
+        run: |
+          gosec ./...
+
+      - name: Run Snyk Security Scan
+        uses: snyk/actions@v3
+        with:
+          args: test --all-projects
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

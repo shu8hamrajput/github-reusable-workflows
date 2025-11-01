@@ -11,7 +11,10 @@ on:
         required: true
         type: string
         description: "Repository name in GCR"
-      
+      service-name:
+        required: true
+        type: string
+        description: "Name of the Golang service"
       context:
         required: false
         type: string
@@ -22,63 +25,38 @@ on:
         required: true
         description: "GCP Service Account JSON key"
 
-  push:
-    branches:
-      - master
-      - release
-      - feature/**
-    tags:
-      - v*
-
-  pull_request:
-
 permissions:
   contents: read
 
 jobs:
+  lint:
+    name: Lint Code
+    uses: ./ci/lint.yaml
+
+  unit-tests:
+    name: Run Unit Tests
+    uses: ./ci/unit-test.yaml
+
+  integration-tests:
+    name: Run Integration Tests
+    uses: ./ci/integration-test.yaml
+
   build:
-    name: Build and Push to GCR
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # - name: Run tests
-      #   run: |
-      #     docker build -t test:latest -f Dockerfile.test .
-      #     docker run --rm test:latest
-
-      - name: Determine version
-        id: version
-        run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "master" ] && VERSION=latest
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Determined version: $VERSION"
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}          
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker for GCR
-        run: |
-          gcloud auth configure-docker ${{ inputs.gcr-registry }}
-
-      - name: Build image
-        run: |
-          docker build -t ${{ inputs.gcr-registry }}/${{ inputs.gcr-repository }}:${{ steps.version.outputs.version }} ${{ inputs.context }}
-
-      - name: Push image to GCR
-        if: github.event_name != 'pull_request'
-        run: |
-          docker push ${{ inputs.gcr-registry }}/${{ inputs.gcr-repository }}:${{ steps.version.outputs.version }}
+    name: Build
+    needs: [lint, unit-tests, integration-tests]
+    uses: ./ci/build.yaml
+    with:
+      gcr-registry: ${{ inputs.gcr-registry }}
+      gcr-repository: ${{ inputs.gcr-repository }}
+      context: ${{ inputs.context }}
+      version: ${{ inputs.version-tag}}
+      PROJECT_ID: ${{ inputs.PROJECT_ID }}
+  
+  security-scan:
+    name: Security Scan
+    needs: build
+    uses: ./ci/security-scan.yaml
+    with:
+      gcr-registry: ${{ inputs.gcr-registry }}
+      gcr-repository: ${{ inputs.gcr-repository }}
+      version: ${{ inputs.version-tag}}
