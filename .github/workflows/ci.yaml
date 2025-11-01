@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 jobs:
-  lint:
+  lint-code:
     name: Lint Code
     uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/lint.yaml@main
 
@@ -43,7 +43,7 @@ jobs:
 
   build:
     name: Build
-    needs: [lint, unit-tests, integration-tests]
+    needs: [lint-code, unit-tests, integration-tests]
     uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/build.yaml@main
     with:
       gcr-registry: ${{ inputs.gcr-registry }}
