@@ -12,6 +12,12 @@ on:
       environment:
         required: true
         type: string
+      gcr-registry:
+        required: true
+        type: string
+      gcr-repository:
+        required: true
+        type: string
     secrets:
       GCP_SA_KEY:
         required: true
@@ -44,6 +50,8 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
       container_version: ${{ inputs.container_version }}
       environment: ${{ inputs.environment }}
+      gcr-registry: ${{ inputs.gcr-registry }}
+      gcr-repository: ${{ inputs.gcr-repository }}
     secrets:
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
