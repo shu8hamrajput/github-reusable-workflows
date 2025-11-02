@@ -5,7 +5,7 @@ on:
       working-directory:
         required: true
         type: string
-      container_version:
+      version-tag:
         required: true
         type: string
       environment:
@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           echo "🚀 Starting deployment to DEV"
-          echo "📦 Container version: ${{ inputs.container_version }}"
+          echo "📦 Container version: ${{ inputs.version-tag }}"
           sleep 2
           echo "✅ Dev deployment configuration updated"
           echo "✅ Rolling update started"
@@ -67,7 +67,7 @@ jobs:
         shell: bash
         run: |
           echo "🚀 Starting deployment to STAGING"
-          echo "📦 Container version: ${{ inputs.container_version }}"
+          echo "📦 Container version: ${{ inputs.version-tag }}"
           sleep 2
           echo "✅ Staging deployment configuration updated"
           echo "✅ Running canary deployment (25% traffic)"
@@ -97,7 +97,7 @@ jobs:
         shell: bash
         run: |
           echo "⚠️ Starting PRODUCTION deployment..."
-          echo "📦 Container version: ${{ inputs.container_version }}"
+          echo "📦 Container version: ${{ inputs.version-tag }}"
           sleep 2
           echo "✅ Production deployment manifest validated"
           echo "🔄 Starting blue-green deployment"

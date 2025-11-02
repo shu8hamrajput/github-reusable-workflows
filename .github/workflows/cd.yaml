@@ -6,7 +6,7 @@ on:
       working-directory:
         required: true
         type: string
-      container_version:
+      version-tag:
         required: true
         type: string
       environment:
@@ -48,7 +48,7 @@ jobs:
     uses: shu8hamrajput/github-reusable-workflows/.github/workflows/cd-steps/deploy.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
-      container_version: ${{ inputs.container_version }}
+      version-tag: ${{ inputs.version-tag }}
       environment: ${{ inputs.environment }}
       gcr-registry: ${{ inputs.gcr-registry }}
       gcr-repository: ${{ inputs.gcr-repository }}
