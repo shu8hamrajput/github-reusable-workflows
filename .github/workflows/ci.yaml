@@ -33,30 +33,30 @@ jobs:
     name: Lint Code
     uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/lint.yaml@main
 
-  # unit-tests:
-  #   name: Run Unit Tests
-  #   uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/unit-test.yaml@main
+  unit-tests:
+    name: Run Unit Tests
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/unit-test.yaml@main
 
-  # integration-tests:
-  #   name: Run Integration Tests
-  #   uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/integration-test.yaml@main
+  integration-tests:
+    name: Run Integration Tests
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/integration-test.yaml@main
 
-  # build:
-  #   name: Build
-  #   needs: [lint-code, unit-tests, integration-tests]
-  #   uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/build.yaml@main
-  #   with:
-  #     gcr-registry: ${{ inputs.gcr-registry }}
-  #     gcr-repository: ${{ inputs.gcr-repository }}
-  #     context: ${{ inputs.context }}
-  #     version: ${{ inputs.version-tag}}
-  #     PROJECT_ID: ${{ inputs.PROJECT_ID }}
+  build:
+    name: Build
+    needs: [lint-code, unit-tests, integration-tests]
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/build.yaml@main
+    with:
+      gcr-registry: ${{ inputs.gcr-registry }}
+      gcr-repository: ${{ inputs.gcr-repository }}
+      context: ${{ inputs.context }}
+      version: ${{ inputs.version-tag}}
+      PROJECT_ID: ${{ inputs.PROJECT_ID }}
   
-  # security-scan:
-  #   name: Security Scan
-  #   needs: build
-  #   uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/security-scan.yaml@main
-  #   with:
-  #     gcr-registry: ${{ inputs.gcr-registry }}
-  #     gcr-repository: ${{ inputs.gcr-repository }}
-  #     version: ${{ inputs.version-tag}}
+  security-scan:
+    name: Security Scan
+    needs: build
+    uses: shu8hamrajput/github-reusable-workflows/.github/workflows/ci-steps/security-scan.yaml@main
+    with:
+      gcr-registry: ${{ inputs.gcr-registry }}
+      gcr-repository: ${{ inputs.gcr-repository }}
+      version: ${{ inputs.version-tag}}
