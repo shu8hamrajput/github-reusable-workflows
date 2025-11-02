@@ -16,7 +16,7 @@ on:
         type: string
         description: "Build context directory"
         default: "."
-      version:
+      version-tag:
         required: true
         type: string
         description: "Version to tag the Docker image"
